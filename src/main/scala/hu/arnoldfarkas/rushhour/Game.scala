@@ -9,7 +9,9 @@ object Game {
 
   type State = (Field, Set[Car])
 
-  type SolutionPath = List[State]
+  type Path = List[State]
 
   type FinalState = (State, Car) => Boolean
+
+
 }
