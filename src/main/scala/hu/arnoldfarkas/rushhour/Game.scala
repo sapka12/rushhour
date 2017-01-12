@@ -19,10 +19,5 @@ object Game {
 
   type Move = (Car, Step)
   type Path = List[Move]
-//  def possibleSteps(state: State): Set[] {
-//
-//  }
-//
-//  type History =
 
 }

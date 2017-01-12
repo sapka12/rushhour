@@ -15,8 +15,26 @@ object RushHourApp {
 
     def buildGameTree(initState: State): List[(State, Path)] = {
 
-      def validMoves(state: State): Set[(Move, State)] = ???
+      def validSteps(c: Car): Set[Move] = c._1 match {
+        case positions if positions.map(_.x).forall(_ == positions.head.x) => {
+          Set(
+            ((c._1.map(pos => Pos(pos.x, pos.y - 1)), c._2), Up),
+            ((c._1.map(pos => Pos(pos.x, pos.y + 1)), c._2), Down)
+          )
+        }
+        case positions if positions.map(_.y).forall(_ == positions.head.y) => {
+            Set(
+              ((c._1.map(pos => Pos(pos.x-1, pos.y)), c._2), Left),
+              ((c._1.map(pos => Pos(pos.x+1, pos.y)), c._2), Right)
+            )
+        }
+        case _ => throw IllegalArgumentException
+      }
 
+      def validMoves(state: State): Set[(Move, State)] = {
+        val actualCars: Set[Car] = state._2
+
+      }
 
       def gameTree(visitedStates: List[(State, Path)]): List[(State, Path)] = {
 
@@ -33,18 +51,18 @@ object RushHourApp {
           visitedStates
         } else {
           for {
-            (newMove, newState) <- nextMoves
-            gameTree((newState, ) :: visitedStates)
-          }
+            (newMove, newState) <- nextMoves.toList
+            tree <- gameTree((newState, newMove :: path) :: visitedStates)
+          } yield tree
         }
       }
 
-      gameTree(initState, List())
+      gameTree(List((initState, List())))
     }
 
-//    val gameTree: List[(State, History)] = List((startState, List.empty[Move]))
+    val gameTree = buildGameTree(startState)
 
-    val solution: Path = ???
+    val solution: Path = gameTree.filter(a => finalState())
 
     println(startState)
   }
