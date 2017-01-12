@@ -9,9 +9,20 @@ object Game {
 
   type State = (Field, Set[Car])
 
-  type Path = List[State]
-
   type FinalState = (State, Car) => Boolean
 
+  sealed trait Step
+  case object Up extends Step
+  case object Down extends Step
+  case object Left extends Step
+  case object Right extends Step
+
+  type Move = (Car, Step)
+  type Path = List[Move]
+//  def possibleSteps(state: State): Set[] {
+//
+//  }
+//
+//  type History =
 
 }

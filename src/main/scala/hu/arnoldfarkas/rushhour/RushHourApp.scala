@@ -1,7 +1,6 @@
 package hu.arnoldfarkas.rushhour
 
 import hu.arnoldfarkas.rushhour.Game._
-
 import scala.io.Source
 
 object RushHourApp {
@@ -12,11 +11,42 @@ object RushHourApp {
 
     val finalState: FinalState = GameFactory.finalState(finalCarPosition)
     val file = Source.fromFile(inputFilename)
-    val gameState: State = GameFactory.state(file.mkString, "abc".toSet, 'x')
+    val startState: State = GameFactory.state(file.mkString, "abc".toSet, 'x')
 
-    val gameTree =
+    def buildGameTree(initState: State): List[(State, Path)] = {
 
-    println(gameState)
+      def validMoves(state: State): Set[(Move, State)] = ???
+
+
+      def gameTree(visitedStates: List[(State, Path)]): List[(State, Path)] = {
+
+        val state = visitedStates.head._1
+        val path = visitedStates.head._2
+
+        def existIn(moveAndState: (Move, State), visitedStates: List[(State, Path)]) =
+          visitedStates.map(_._1).contains(moveAndState._2)
+
+        val nextMoves: Set[(Move, State)] =
+          validMoves(visitedStates.head._1).filterNot(existIn(_, visitedStates))
+
+        if (nextMoves isEmpty) {
+          visitedStates
+        } else {
+          for {
+            (newMove, newState) <- nextMoves
+            gameTree((newState, ) :: visitedStates)
+          }
+        }
+      }
+
+      gameTree(initState, List())
+    }
+
+//    val gameTree: List[(State, History)] = List((startState, List.empty[Move]))
+
+    val solution: Path = ???
+
+    println(startState)
   }
 
   def parseCar(inputCar: String): Car = {
