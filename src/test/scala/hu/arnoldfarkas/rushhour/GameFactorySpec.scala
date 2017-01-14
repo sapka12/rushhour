@@ -17,7 +17,7 @@ class GameFactorySpec extends FlatSpec {
       """.stripMargin
 
     val expected: Set[Pos] = Set(Pos(5, 0), Pos(5, 1), Pos(5, 2))
-    val actual: Set[Pos] = GameFactory.positionsForChar('b', input)
+    val actual: Set[Pos] = GameFactory.positionsForChar('b', input).positions
     assertResult(expected)(actual)
   }
 
@@ -47,7 +47,7 @@ class GameFactorySpec extends FlatSpec {
   }
 
   it should "define final state" in {
-    val finalCarPos: Car = (Set(Pos(0, 2), Pos(1, 2)), 'a')
+    val finalCarPos: Car = Car(Set(Pos(0, 2), Pos(1, 2)), 'a')
     val carIds = "abc".toSet
     val emptySpace = 'x'
 
@@ -70,8 +70,6 @@ class GameFactorySpec extends FlatSpec {
           |xxxxxb
       """.stripMargin, carIds, emptySpace)
 
-    val finalState: FinalState = GameFactory.finalState(finalCarPos)
-
     assert(finalState(theFinalState, finalCarPos))
     assert(!finalState(notFinalState, finalCarPos))
   }
@@ -89,9 +87,9 @@ class GameFactorySpec extends FlatSpec {
     val cars: Set[Car] = GameFactory.cars(input, "abc".toSet)
 
     assert(cars.size == 3)
-    assert(cars.contains((Set(Pos(0, 2), Pos(1, 2)), 'a')))
-    assert(cars.contains((Set(Pos(5, 0), Pos(5, 1), Pos(5, 2)), 'b')))
-    assert(cars.contains((Set(Pos(4, 3), Pos(5, 3)), 'c')))
+    assert(cars.contains(Car(Set(Pos(0, 2), Pos(1, 2)), 'a')))
+    assert(cars.contains(Car(Set(Pos(5, 0), Pos(5, 1), Pos(5, 2)), 'b')))
+    assert(cars.contains(Car(Set(Pos(4, 3), Pos(5, 3)), 'c')))
   }
 
 }

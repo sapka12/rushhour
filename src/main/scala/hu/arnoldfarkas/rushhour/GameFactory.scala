@@ -4,16 +4,14 @@ import hu.arnoldfarkas.rushhour.Game._
 
 object GameFactory {
 
-  def finalState(finalCarPosition: (Set[Pos], Char)): FinalState =
-    (state, car) => state._2.contains(car)
 
   private def toMatrix(input: String) =
     input.split("\n").toList.map(_.toList)
 
   def createField(input: String, fieldChars: Set[Char]): Field =
-    pos => fieldChars.flatMap(positionsForChar(_, input)).contains(pos)
+    pos => fieldChars.flatMap(positionsForChar(_, input).positions).contains(pos)
 
-  def positionsForChar(c: Char, input: String): Set[Pos] = {
+  def positionsForChar(c: Char, input: String): Car = {
 
     def findCharInArr(c: Char,
                       lines: List[List[Char]],
@@ -39,12 +37,12 @@ object GameFactory {
       }
     }
 
-    findCharInArr(c, toMatrix(input), 0, Set())
+    Car(findCharInArr(c, toMatrix(input), 0, Set()), c)
   }
 
   def cars(input: String, carIds: Set[Char]): Set[Car] =
-    carIds.map(carId => (positionsForChar(carId, input), carId))
+    carIds.map(positionsForChar(_, input))
 
   def state(inputMap: String, carIds: Set[Char], emptyPlaceId: Char): State =
-    (createField(inputMap, carIds + emptyPlaceId), cars(inputMap, carIds))
+    State(createField(inputMap, carIds + emptyPlaceId), cars(inputMap, carIds))
 }
