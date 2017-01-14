@@ -1,6 +1,7 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.Game._
+import hu.arnoldfarkas.rushhour.game.{Car, Pos, State}
+import hu.arnoldfarkas.rushhour.game.Path.Field
 
 object GameFactory {
 

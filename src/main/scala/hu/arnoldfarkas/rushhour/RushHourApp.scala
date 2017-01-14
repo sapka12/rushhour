@@ -1,6 +1,8 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.Game._
+import hu.arnoldfarkas.rushhour.game.Path._
+import hu.arnoldfarkas.rushhour.game._
+
 import scala.io.Source
 
 object RushHourApp {
@@ -41,7 +43,7 @@ object RushHourApp {
 
     val gameTree = buildGameTree(startState)
 
-    val solution: Path = gameTree.filter(p => finalState(p._1, finalCarPosition)).head._2
+    val solution: Path = gameTree.filter(p => State.isFinal(p._1, finalCarPosition)).head._2
 
     println(solution)
   }

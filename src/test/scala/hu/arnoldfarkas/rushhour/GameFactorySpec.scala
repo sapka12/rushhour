@@ -1,7 +1,8 @@
 package hu.arnoldfarkas.rushhour
 
+import hu.arnoldfarkas.rushhour.game.Path.Field
+import hu.arnoldfarkas.rushhour.game._
 import org.scalatest.FlatSpec
-import Game._
 
 class GameFactorySpec extends FlatSpec {
   behavior of "GameFactory"
@@ -70,8 +71,8 @@ class GameFactorySpec extends FlatSpec {
           |xxxxxb
       """.stripMargin, carIds, emptySpace)
 
-    assert(finalState(theFinalState, finalCarPos))
-    assert(!finalState(notFinalState, finalCarPos))
+    assert(State.isFinal(theFinalState, finalCarPos))
+    assert(!State.isFinal(notFinalState, finalCarPos))
   }
 
   it should "find the cars" in {
