@@ -9,32 +9,23 @@ object State {
 
 case class State(val field: Field, val cars: Set[Car]) {
 
-  def validMoves: Set[(Move, State)] = {
-    val allValidSteps = for {
+  override def toString: String = "State: "+ cars.toString()
+
+  def withMove(move: Move): State =
+    copy(cars = cars.filterNot(_.sign == move.car.sign) + move.car)
+
+  def isValid: Boolean = {
+    val allPos = cars.toList.flatMap(_.positions)
+    allPos.toSet.size == allPos.size
+  }
+
+  def validMoves: Set[(Move, State)] =
+    for {
       car <- cars
       move <- car.validMoves
-    } yield move
+      stateByMove = withMove(move)
+      if (stateByMove.isValid)
+      if (stateByMove.cars.flatMap(_.positions).forall(field))
+    } yield (move, stateByMove)
 
-    allValidSteps.filter(_.car.positions.forall(field))
-      .map(move => (move, goBy(move)))
-      .filterNot(_._2 == None)
-      .map(tuple => (tuple._1, tuple._2.get))
-  }
-
-  def goBy(move: Move): Option[State] = {
-    val car = move.car
-    val steps = car.validSteps
-    if (steps.contains(move.step)) {
-      car goBy move.step match {
-        case Some(c) => {
-          val newCars: Set[Car] =
-            cars.filter(_.sign == car.sign) + c
-          Some(State(field, newCars))
-        }
-        case None => None
-      }
-    } else {
-      None
-    }
-  }
 }

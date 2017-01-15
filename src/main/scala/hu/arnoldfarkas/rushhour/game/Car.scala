@@ -4,21 +4,11 @@ import hu.arnoldfarkas.rushhour.game.Path._
 
 case class Car(val positions: Set[Pos], val sign: Char) {
 
-  def validMoves: Set[Move] = positions match {
-    case positions if positions.map(_.x).forall(_ == positions.head.x) => {
-      Set(
-        Move(Car(positions.map(pos => Pos(pos.x, pos.y - 1)), sign), Up),
-        Move(Car(positions.map(pos => Pos(pos.x, pos.y + 1)), sign), Down)
-      )
-    }
-    case positions if positions.map(_.y).forall(_ == positions.head.y) => {
-      Set(
-        Move(Car(positions.map(pos => Pos(pos.x - 1, pos.y)), sign),
-          Left),
-        Move(Car(positions.map(pos => Pos(pos.x + 1, pos.y)), sign),
-          Right)
-      )
-    }
+  def validMoves: Set[Move] = {
+    validSteps.map(step => goBy(step) match {
+      case Some(car) => Some(Move(car, step))
+      case None => None
+    }).flatten
   }
 
   def validSteps: Set[Step] = {
@@ -31,6 +21,7 @@ case class Car(val positions: Set[Pos], val sign: Char) {
   }
 
   def goBy(step: Step): Option[Car] = {
+
     def reposition(fp: Pos => Pos): Car = Car(positions.map(fp), sign)
 
     if (validSteps.contains(step)) {
