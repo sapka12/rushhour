@@ -11,7 +11,6 @@ object RushHourApp {
     val inputFilename = args(0)
     val finalCarPosition: Car = parseCar(args(1)) // a,0,2,1,2
 
-
     val file = Source.fromFile(inputFilename)
     val startState: State = GameFactory.state(file.mkString, "abc".toSet, 'x')
 
@@ -19,22 +18,21 @@ object RushHourApp {
 
       def gameTree(visitedStates: List[(State, Path)]): List[(State, Path)] = {
 
-        val state = visitedStates.head._1
-        val path = visitedStates.head._2
+        val previousState = visitedStates.head._1
+        val previousPath = visitedStates.head._2
 
-        def existIn(moveAndState: (Move, State), visitedStates: List[(State, Path)]) =
-          visitedStates.map(_._1).contains(moveAndState._2)
+        val moves = previousState.validMoves
 
-        val nextMoves: Set[(Move, State)] =
-          state.validMoves.filterNot(existIn(_, visitedStates))
+        if (moves isEmpty) visitedStates
+        else {
 
-        if (nextMoves isEmpty) {
-          visitedStates
-        } else {
-          for {
-            (newMove, newState) <- nextMoves.toList
-            tree <- gameTree((newState, newMove :: path) :: visitedStates)
-          } yield tree
+          val nextStuff: List[(State, Path)] = for {
+            (move, state) <- moves
+            nextState: State <- state.withMove(move)
+            list <- gameTree((nextState, move :: previousPath) :: visitedStates)
+          } yield list
+
+          nextStuff.filterNot(visitedStates.contains(_)) ::: visitedStates
         }
       }
 
@@ -43,7 +41,8 @@ object RushHourApp {
 
     val gameTree = buildGameTree(startState)
 
-    val solution: Path = gameTree.filter(p => State.isFinal(p._1, finalCarPosition)).head._2
+    val solution: Path =
+      gameTree.filter(p => State.isFinal(p._1, finalCarPosition)).head._2
 
     println(solution)
   }
