@@ -22,6 +22,30 @@ class StateSpec extends FlatSpec {
 
   behavior of "validMoves"
 
+  it should "return only the valid steps : small" in {
+    val field = sqField(3)
+
+    val a = Car(Set(Pos(0, 0), Pos(0, 1)), 'a')
+    val b = Car(Set(Pos(0, 2), Pos(1, 2)), 'b')
+
+    val state = State(field, Set(a, b))
+
+    val actual: Set[(Move, State)] = state.validMoves
+    val expected: Set[(Move, State)] = Set(
+      (Move(b, Path.Right),
+        State(field,
+          Set(
+            b.copy(positions = Set(Pos(2, 2), Pos(1, 2))),
+            a
+          )))
+    )
+
+    if (expected.size != actual.size) actual.foreach(println)
+
+    assertResult(expected.size)(actual.size)
+    assertResult(expected)(actual)
+  }
+
   it should "return only the valid steps" in {
     val field = sqField(6)
 
