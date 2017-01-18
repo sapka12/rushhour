@@ -26,4 +26,5 @@ object Path {
   }
 
   type Path = List[Move]
+  type History = (State, Path)
 }

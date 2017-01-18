@@ -2,9 +2,24 @@ package hu.arnoldfarkas.rushhour
 
 import hu.arnoldfarkas.rushhour.game.{Car, Path, Pos, State}
 import org.scalatest.FlatSpec
-import hu.arnoldfarkas.rushhour.game.Path.{Move, sqField}
+import hu.arnoldfarkas.rushhour.game.Path.{Field, Move, sqField}
 
 class StateSpec extends FlatSpec {
+
+  "State" should "equals" in {
+    val f: Field = p => true
+
+    val aCar = Car(Set(Pos(0, 2), Pos(0, 3)), 'a')
+    val aCar2 = Car(Set(Pos(0, 3), Pos(0, 2)), 'a')
+    val bCar = Car(Set(Pos(2, 3), Pos(3, 3)), 'a')
+    val bCar2 = Car(Set(Pos(3, 3), Pos(2, 3)), 'a')
+
+    val s1 = State(f, Set(aCar, bCar))
+    val s2 = State(f, Set(aCar2, bCar2))
+
+    assert(s1 == s2)
+  }
+
   behavior of "validMoves"
 
   it should "return only the valid steps" in {

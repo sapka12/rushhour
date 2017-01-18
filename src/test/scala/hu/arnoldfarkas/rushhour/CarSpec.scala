@@ -5,6 +5,15 @@ import hu.arnoldfarkas.rushhour.game.{Car, Pos}
 import org.scalatest.FlatSpec
 
 class CarSpec extends FlatSpec {
+  behavior of "equals"
+
+  it should "equls" in {
+    val aCar = Car(Set(Pos(0, 2), Pos(0, 3)), 'a')
+    val bCar = Car(Set(Pos(0, 3), Pos(0, 2)), 'a')
+
+    assert(aCar == bCar)
+  }
+
   behavior of "validMoves"
 
   it should "go up or down if it is vertical" in {

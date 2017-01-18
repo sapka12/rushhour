@@ -7,32 +7,54 @@ import scala.io.Source
 
 object RushHourApp {
 
+
+
   def main(args: Array[String]): Unit = {
-    val inputFilename = args(0)
-    val finalCarPosition: Car = parseCar(args(1)) // a,0,2,1,2
+//    val inputFilename = args(0)
+//    val finalCarPosition: Car = parseCar(args(1)) // a,0,2,1,2
+//
+//    val file = Source.fromFile(inputFilename)
+//
+//    val startState: State = GameFactory.state(file.mkString, "abc".toSet, 'x')
 
-    val file = Source.fromFile(inputFilename)
-    val startState: State = GameFactory.state(file.mkString, "abc".toSet, 'x')
+    val finalCarPosition: Car = Car(Set(Pos(2, 1), Pos(3, 1)), 'a')
+    val startState: State = GameFactory.state(
+      """xxxb
+        |aaxb
+        |xxxx
+        |xxxx
+      """.stripMargin
+      , "ab".toSet, 'x')
 
-    def buildGameTree(initState: State): List[(State, Path)] = {
+    def nextState(histories: List[History]): Option[History] =
+      if (histories.isEmpty) None
+      else {
+        val (rootState, rootPath) = histories.head
 
-      def gameTree(visitedStates: List[(State, Path)]): List[(State, Path)] = {
 
-        val previousState = visitedStates.head._1
-        val previousPath = visitedStates.head._2
 
-        val moves = previousState.validMoves
+        val visitedStates = histories.map(_._1)
+        //TODO fix valid moves
+        val possibleSteps = rootState.validMoves.filterNot(m => visitedStates.contains(m._2))
+        if (possibleSteps.isEmpty) {
+          nextState(histories.tail)
+        } else {
+          val (nextMove, nextState) = possibleSteps.head
+          Some((nextState, nextMove :: rootPath))
+        }
+      }
 
-        if (moves isEmpty) visitedStates
-        else {
+    def buildGameTree(initState: State): List[History] = {
 
-          val nextStuff: List[(State, Path)] = for {
-            (move, state) <- moves
-            nextState: State <- state.withMove(move)
-            list <- gameTree((nextState, move :: previousPath) :: visitedStates)
-          } yield list
+      def gameTree(visitedStates: List[History]): List[History] = {
 
-          nextStuff.filterNot(visitedStates.contains(_)) ::: visitedStates
+
+        nextState(visitedStates) match {
+          case None => visitedStates
+          case Some(nextState) => {
+            println(nextState)
+            gameTree(nextState :: visitedStates)
+          }
         }
       }
 
@@ -44,6 +66,7 @@ object RushHourApp {
     val solution: Path =
       gameTree.filter(p => State.isFinal(p._1, finalCarPosition)).head._2
 
+    println("solution:")
     println(solution)
   }
 
