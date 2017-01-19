@@ -30,17 +30,19 @@ class StateSpec extends FlatSpec {
 
     val state = State(field, Set(a, b))
 
-    val actual: Set[(Move, State)] = state.validMoves
-    val expected: Set[(Move, State)] = Set(
-      (Move(b, Path.Right),
+    val b_v2 = b.copy(positions = Set(Pos(2, 2), Pos(1, 2)))
+
+    val actual: Set[(Car, Move, State)] = state.validMoves
+    val expected: Set[(Car, Move, State)] = Set(
+      (
+        b,
+        Move(b_v2, Path.Right),
         State(field,
           Set(
-            b.copy(positions = Set(Pos(2, 2), Pos(1, 2))),
+            b_v2,
             a
           )))
     )
-
-    if (expected.size != actual.size) actual.foreach(println)
 
     assertResult(expected.size)(actual.size)
     assertResult(expected)(actual)
@@ -55,25 +57,21 @@ class StateSpec extends FlatSpec {
 
     val state = State(field, Set(a, b, c))
 
-    val actual: Set[(Move, State)] = state.validMoves
-    val expected: Set[(Move, State)] = Set(
-      (Move(a, Path.Right),
-        State(field,
-          Set(
-            a.copy(positions = Set(Pos(2, 2), Pos(1, 2))),
-            b,
-            c
-          ))),
-      (Move(c, Path.Left),
-        State(field,
-          Set(
-            a,
-            b,
-            c.copy(positions = Set(Pos(3, 3), Pos(4, 3)))
-          )))
-    )
+    val a_v2 = a.copy(positions = Set(Pos(2, 2), Pos(1, 2)))
+    val c_v2 = c.copy(positions = Set(Pos(3, 3), Pos(4, 3)))
 
-    if (expected.size != actual.size) actual.foreach(println)
+    val actual: Set[(Car, Move, State)] = state.validMoves
+    val expected: Set[(Car, Move, State)] = Set(
+      (
+        a,
+        Move(a_v2, Path.Right),
+        State(field,Set(a_v2,b,c))
+      ),(
+        c,
+        Move(c_v2, Path.Left),
+        State(field,Set(a,b,c_v2))
+      )
+    )
 
     assertResult(expected.size)(actual.size)
     assertResult(expected)(actual)

@@ -26,30 +26,32 @@ object RushHourApp {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    def nextState(histories: List[History]): Option[History] =
-      if (histories.isEmpty) None
-      else {
-        val (rootState, rootPath) = histories.head
-
-
-
+    def nextHistory(histories: List[History]): Option[History] = histories match {
+      case List() => None
+      case rootHistory :: otherHistories => {
+        val (rootState, rootPath) = rootHistory
         val visitedStates = histories.map(_._1)
-        //TODO fix valid moves
-        val possibleSteps = rootState.validMoves.filterNot(m => visitedStates.contains(m._2))
+
+        def visited(m: (Car, Move, State)): Boolean = {
+          visitedStates.contains(m._3)
+        }
+
+        val possibleSteps = rootState.validMoves.filterNot(visited)
+
         if (possibleSteps.isEmpty) {
-          nextState(histories.tail)
+          nextHistory(otherHistories)
         } else {
-          val (nextMove, nextState) = possibleSteps.head
+          val (_, nextMove, nextState) = possibleSteps.head
           Some((nextState, nextMove :: rootPath))
         }
       }
+    }
 
     def buildGameTree(initState: State): List[History] = {
 
       def gameTree(visitedStates: List[History]): List[History] = {
 
-
-        nextState(visitedStates) match {
+        nextHistory(visitedStates) match {
           case None => visitedStates
           case Some(nextState) => {
             println(nextState)
