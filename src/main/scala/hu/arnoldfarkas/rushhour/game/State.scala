@@ -11,6 +11,11 @@ case class State(val field: Field, val cars: Set[Car]) {
 
   override def toString: String = "State: "+ cars.toString()
 
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case s: State => /*s.field == field &&*/ s.cars == cars
+    case _ => false
+  }
+
   def withMove(c: Car, move: Move): State =
     copy(cars = cars - c + move.car)
 
