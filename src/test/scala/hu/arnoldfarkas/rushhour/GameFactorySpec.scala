@@ -1,6 +1,5 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game.Path.Field
 import hu.arnoldfarkas.rushhour.game._
 import org.scalatest.FlatSpec
 
@@ -32,7 +31,7 @@ class GameFactorySpec extends FlatSpec {
         |xxxxxx
       """.stripMargin
 
-    val field: Field = GameFactory.createField(input, "xabc".toSet)
+    val field = GameFactory.createField(input, "xabc".toSet).f
 
     assert(field(Pos(0, 0)))
     assert(field(Pos(0, 5)))

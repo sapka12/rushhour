@@ -1,7 +1,6 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game.Path.History
-import hu.arnoldfarkas.rushhour.game.{GameTree, State}
+import hu.arnoldfarkas.rushhour.game._
 import org.scalatest.FlatSpec
 
 class GameTreeSpec extends FlatSpec {
@@ -15,7 +14,7 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    val histories: List[History] = List((startState, List()))
+    val histories: List[History] = List(History(startState, Path.empty))
 
     val actual = GameTree.nextHistory(histories)
 
@@ -30,7 +29,7 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    val histories: List[History] = List((startState, List()))
+    val histories: List[History] = List(History(startState, Path.empty))
 
     val actual = GameTree.nextHistory(histories)
 
@@ -38,7 +37,7 @@ class GameTreeSpec extends FlatSpec {
       """xxxb
         |xaab
       """.stripMargin
-      , "ab".toSet, 'x'))(actual.get._1)
+      , "ab".toSet, 'x'))(actual.get.state)
   }
 
   behavior of "build"
@@ -50,9 +49,9 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    val expected: List[History] = List((startState, List()))
+    val expected: List[History] = List(History(startState, Path.empty))
 
-    val actual: List[History] = GameTree.build(startState)
+    val actual: List[History] = GameTree.build(startState).histories
 
     assertResult(expected)(actual)
   }
@@ -64,7 +63,7 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    assertResult(2)(GameTree.build(startState).size)
+    assertResult(2)(GameTree.build(startState).histories.size)
   }
 
 }

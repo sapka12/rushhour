@@ -1,7 +1,6 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game.Path._
-import hu.arnoldfarkas.rushhour.game.{Car, Pos}
+import hu.arnoldfarkas.rushhour.game._
 import org.scalatest.FlatSpec
 
 class CarSpec extends FlatSpec {

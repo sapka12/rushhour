@@ -1,21 +1,10 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game.Path._
 import hu.arnoldfarkas.rushhour.game._
-
-import scala.io.Source
 
 object RushHourApp {
 
-
-
   def main(args: Array[String]): Unit = {
-//    val inputFilename = args(0)
-//    val finalCarPosition: Car = parseCar(args(1)) // a,0,2,1,2
-//
-//    val file = Source.fromFile(inputFilename)
-//
-//    val startState: State = GameFactory.state(file.mkString, "abc".toSet, 'x')
 
     val finalCarPosition: Car = Car(Set(Pos(2, 1), Pos(3, 1)), 'a')
     val startState: State = GameFactory.state(
@@ -28,7 +17,7 @@ object RushHourApp {
 
     val gameTree = GameTree.build(startState)
 
-    val solution: Path = gameTree.filter(p => State.isFinal(p._1, finalCarPosition)).head._2
+    val solution: Path = gameTree.histories.filter(p => State.isFinal(p.state, finalCarPosition)).head.path
 
     println("solution:")
     println(solution)

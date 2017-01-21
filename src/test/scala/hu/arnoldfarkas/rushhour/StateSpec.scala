@@ -1,13 +1,13 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game.{Car, Path, Pos, State}
 import org.scalatest.FlatSpec
-import hu.arnoldfarkas.rushhour.game.Path.{Field, Move, sqField}
+import hu.arnoldfarkas.rushhour.game._
+import Field._
 
 class StateSpec extends FlatSpec {
 
   "State" should "equals" in {
-    val f: Field = p => true
+    val f: Field = Field(_ => true)
 
     val aCar = Car(Set(Pos(0, 2), Pos(0, 3)), 'a')
     val aCar2 = Car(Set(Pos(0, 3), Pos(0, 2)), 'a')
@@ -23,7 +23,7 @@ class StateSpec extends FlatSpec {
   behavior of "validMoves"
 
   it should "return only the valid steps : small" in {
-    val field = sqField(3)
+    val field = Field(sqField(3))
 
     val a = Car(Set(Pos(0, 0), Pos(0, 1)), 'a')
     val b = Car(Set(Pos(0, 2), Pos(1, 2)), 'b')
@@ -36,7 +36,7 @@ class StateSpec extends FlatSpec {
     val expected: Set[(Car, Move, State)] = Set(
       (
         b,
-        Move(b_v2, Path.Right),
+        Move(b_v2, Right),
         State(field,
           Set(
             b_v2,
@@ -49,7 +49,7 @@ class StateSpec extends FlatSpec {
   }
 
   it should "return only the valid steps" in {
-    val field = sqField(6)
+    val field = Field(sqField(6))
 
     val a = Car(Set(Pos(0, 2), Pos(1, 2)), 'a')
     val b = Car(Set(Pos(5, 0), Pos(5, 2), Pos(5, 1)), 'b')
@@ -64,11 +64,11 @@ class StateSpec extends FlatSpec {
     val expected: Set[(Car, Move, State)] = Set(
       (
         a,
-        Move(a_v2, Path.Right),
+        Move(a_v2, Right),
         State(field,Set(a_v2,b,c))
       ),(
         c,
-        Move(c_v2, Path.Left),
+        Move(c_v2, Left),
         State(field,Set(a,b,c_v2))
       )
     )

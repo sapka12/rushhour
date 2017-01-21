@@ -1,6 +1,6 @@
 package hu.arnoldfarkas.rushhour.game
 
-import hu.arnoldfarkas.rushhour.game.Path._
+import hu.arnoldfarkas.rushhour.game._
 
 case class Car(val positions: Set[Pos], val sign: Char) {
 

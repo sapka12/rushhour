@@ -1,6 +1,6 @@
 package hu.arnoldfarkas.rushhour.game
 
-import hu.arnoldfarkas.rushhour.game.Path._
+import hu.arnoldfarkas.rushhour.game._
 
 object State {
   def isFinal(state: State, car: Car): Boolean =
@@ -30,7 +30,7 @@ case class State(val field: Field, val cars: Set[Car]) {
       move <- car.validMoves
       stateByMove = withMove(car, move)
       if (stateByMove.isValid)
-      if (stateByMove.cars.flatMap(_.positions).forall(field))
+      if (stateByMove.cars.flatMap(_.positions).forall(field.f))
     } yield (car, move, stateByMove)
 
 }

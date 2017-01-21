@@ -1,40 +1,41 @@
 package hu.arnoldfarkas.rushhour.game
 
-import hu.arnoldfarkas.rushhour.game.Path.{History, Move}
-
 object GameTree {
 
   def nextHistory(histories: List[History]): Option[History] = histories match {
     case List() => None
-    case rootHistory :: otherHistories => {
+    case history :: otherHistories => {
       def visited(m: (Car, Move, State)): Boolean = {
-          histories.map(_._1).contains(m._3)
+          histories.map(_.state).contains(m._3)
       }
 
-      val (rootState, rootPath) = rootHistory
-      val possibleSteps = rootState.validMoves.filterNot(visited)
+      val possibleSteps = history.state.validMoves.filterNot(visited)
 
       if (possibleSteps.isEmpty) {
 
         nextHistory(otherHistories)
       } else {
         val (_, nextMove, nextState) = possibleSteps.head
-        Some((nextState, nextMove :: rootPath))
+        Some(History(nextState, Path(nextMove :: history.path.moves)))
       }
     }
   }
 
-  def build(startState: State): List[History] = {
+  def build(startState: State): GameTree = {
 
-    def gameTree(visitedStates: List[History]): List[History] = {
-      nextHistory(visitedStates) match {
-        case None => visitedStates
+    def gameTree(histories: List[History]): List[History] = {
+      nextHistory(histories) match {
+        case None => histories
         case Some(nextState) => {
-          gameTree(nextState :: visitedStates)
+          gameTree(nextState :: histories)
         }
       }
     }
 
-    gameTree(List((startState, List())))
+    val initialHistory = History(startState, Path.empty)
+
+    GameTree(gameTree(List(initialHistory)))
   }
 }
+
+case class GameTree(histories: List[History])

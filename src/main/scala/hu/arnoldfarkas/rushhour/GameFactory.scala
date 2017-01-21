@@ -1,7 +1,6 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game.{Car, Pos, State}
-import hu.arnoldfarkas.rushhour.game.Path.Field
+import hu.arnoldfarkas.rushhour.game._
 
 object GameFactory {
 
@@ -9,8 +8,9 @@ object GameFactory {
   private def toMatrix(input: String) =
     input.split("\n").toList.map(_.toList)
 
-  def createField(input: String, fieldChars: Set[Char]): Field =
+  def createField(input: String, fieldChars: Set[Char]) = Field(
     pos => fieldChars.flatMap(positionsForChar(_, input).positions).contains(pos)
+  )
 
   def positionsForChar(c: Char, input: String): Car = {
 
