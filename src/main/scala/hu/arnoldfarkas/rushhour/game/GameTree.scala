@@ -2,40 +2,47 @@ package hu.arnoldfarkas.rushhour.game
 
 object GameTree {
 
-  def nextHistory(histories: List[History]): Option[History] = histories match {
-    case List() => None
-    case history :: otherHistories => {
-      def visited(m: (Car, Move, State)): Boolean = {
-          histories.map(_.state).contains(m._3)
-      }
+  def nextHistory(histories: List[History]): Option[History] = {
 
-      val possibleSteps = history.state.validMoves.filterNot(visited)
+    val visited = histories.map(_.state)
 
-      if (possibleSteps.isEmpty) {
+    def optionalHistory(histories: List[History]): Option[History]  = histories match {
+      case List() => None
+      case history :: otherHistories => {
 
-        nextHistory(otherHistories)
-      } else {
-        val (_, nextMove, nextState) = possibleSteps.head
-        Some(History(nextState, Path(nextMove :: history.path.moves)))
-      }
-    }
-  }
+        val nextHistories = history
+          .next()
+          .filterNot(h => visited.contains(h.state))
 
-  def build(startState: State): GameTree = {
-
-    def gameTree(histories: List[History]): List[History] = {
-      nextHistory(histories) match {
-        case None => histories
-        case Some(nextState) => {
-          gameTree(nextState :: histories)
+        if (nextHistories.isEmpty) {
+          optionalHistory(otherHistories)
+        } else {
+          Some(nextHistories.head)
         }
       }
     }
 
-    val initialHistory = History(startState, Path.empty)
+    optionalHistory(histories)
+  }
 
-    GameTree(gameTree(List(initialHistory)))
+  def tree[A](visited: List[A], next: List[A] => Option[A]): List[A] = {
+    next(visited) match {
+      case None => visited
+      case Some(elem) => tree(elem :: visited, next)
+    }
+  }
+
+  def build(startState: State): GameTree = {
+    val initialHistory = History(startState, Path.empty)
+    val histories = tree(List(initialHistory), nextHistory)
+    GameTree(histories)
   }
 }
 
-case class GameTree(histories: List[History])
+case class GameTree(histories: List[History]) {
+  def solution(finalCarPos : Car): Option[Path] =
+    histories
+      .filter(h => State.isFinal(h.state, finalCarPos))
+      .sortWith((lt, gt) => lt.path.moves.size < gt.path.moves.size)
+      .headOption.map(_.path)
+}

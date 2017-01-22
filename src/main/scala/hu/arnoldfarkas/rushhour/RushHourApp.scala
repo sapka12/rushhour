@@ -6,20 +6,23 @@ object RushHourApp {
 
   def main(args: Array[String]): Unit = {
 
-    val finalCarPosition: Car = Car(Set(Pos(2, 1), Pos(3, 1)), 'a')
+    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'a')
     val startState: State = GameFactory.state(
-      """xxxb
-        |aaxb
-        |xxxx
-        |xxxx
+      """xxxxxx
+        |xxxxxx
+        |aaxxxb
+        |xxxxxb
+        |xxxxcc
+        |xxxxxx
       """.stripMargin
-      , "ab".toSet, 'x')
+      , "abc".toSet, 'x')
 
     val gameTree = GameTree.build(startState)
 
-    val solution: Path = gameTree.histories.filter(p => State.isFinal(p.state, finalCarPosition)).head.path
+    val solution: Path = gameTree.solution(finalCarPosition).get
 
     println("solution:")
+    println(solution.moves.size)
     println(solution)
   }
 

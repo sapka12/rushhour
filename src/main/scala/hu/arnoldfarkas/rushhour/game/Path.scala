@@ -19,15 +19,25 @@ case object Right extends Step
 
 case class Move(val car: Car, val step: Step) {
   override def toString: String =
-    "[" + car.sign.toString + {
+    car.sign.toString + {
       step match {
         case Up => "^"
         case Down => "v"
         case Left => "<"
         case Right => ">"
       }
-    } + "]"
+    }
 }
 
-case class Path(moves: List[Move])
-case class History(state: State, path: Path)
+case class Path(moves: List[Move]) {
+  override def toString: String = "Path: " + moves.reverse.mkString(", ")
+}
+
+case class History(state: State, path: Path) {
+  def next() : Set[History] = {
+    val n = state.validMoves.map(x => {
+      History(x._3, Path(x._2 :: path.moves))
+    })
+    n
+  }
+}
