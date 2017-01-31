@@ -121,7 +121,7 @@ class GameTreeSpec extends FlatSpec {
   }
 
 
-  it should "have 2 paths" in {
+  it should "have 4 paths" in {
     def createState(str: String): State = GameFactory.state(
       str, "ab".toSet, 'x')
 
@@ -149,6 +149,9 @@ class GameTreeSpec extends FlatSpec {
     ).map(createState)
 
     val tree = GameTree.build(createState(startState))
+
+    tree.histories.map(_.path).foreach(println)
+
     assertResult(possibleStates.size)(tree.histories.size)
 
     tree.histories.map(_.state).foreach(st =>

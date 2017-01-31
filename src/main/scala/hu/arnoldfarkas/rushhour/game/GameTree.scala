@@ -6,7 +6,9 @@ object GameTree {
 
     val visited = histories.map(_.state)
 
-    def optionalHistory(histories: List[History]): Option[History]  = histories match {
+    def optionalHistory(histories: List[History]): Option[History]  = histories
+      .sortWith((lt, gt) => lt.path.moves.size < gt.path.moves.size)
+    match {
       case List() => None
       case history :: otherHistories => {
 
