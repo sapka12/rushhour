@@ -6,24 +6,24 @@ object RushHourApp {
 
   def main(args: Array[String]): Unit = {
 
-    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'a')
+    val finalCarPosition: Car = Car(Set(Pos(2, 2), Pos(3, 2)), 'a')
     val startState: State = GameFactory.state(
-      """xxxxxx
-        |xxxxxx
-        |aaxxxb
-        |xxxxxb
-        |xxxxcc
-        |xxxxxx
+      """xxxx
+        |xxxx
+        |aaxb
+        |xxxb
       """.stripMargin
-      , "abc".toSet, 'x')
+      , "ab".toSet, 'x')
 
     val gameTree = GameTree.build(startState)
 
-    val solution: Path = gameTree.solution(finalCarPosition).get
-
-    println("solution:")
-    println(solution.moves.size)
-    println(solution)
+    gameTree.histories.map(_.path).foreach(println)
+//
+//    val solution: Path = gameTree.solution(finalCarPosition).get
+//
+//    println("solution:")
+//    println(solution.moves.size)
+//    println(solution)
   }
 
   def parseCar(inputCar: String): Car = {
