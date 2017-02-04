@@ -19,13 +19,9 @@ class GameTreeSpec extends FlatSpec {
     def method(ints: List[Int]): Option[Int] =
       if (ints.min > 1) {
         val next = ints.min - 1
-        println(next)
         Some(next)
       }
-      else {
-        println("none")
-        None
-      }
+      else None
 
     def none(i: List[Int]) = None
 
@@ -42,7 +38,7 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    val histories: List[History] = List(History(startState, Path.empty))
+    val histories = Stream(History(startState, Path.empty))
 
     val actual = GameTree.nextHistory(histories)
 
@@ -56,7 +52,7 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    val histories: List[History] = List(History(startState, Path.empty))
+    val histories = Stream(History(startState, Path.empty))
 
     val actual = GameTree.nextHistory(histories).get
 
@@ -85,11 +81,11 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    val historiesStep0: List[History] = List(History(startState, Path.empty))
+    val historiesStep0 = Stream(History(startState, Path.empty))
 
     val history1 = GameTree.nextHistory(historiesStep0).get
 
-    val historiesStep1: List[History] = List(History(startState, Path.empty), history1)
+    val historiesStep1 = Stream(History(startState, Path.empty), history1)
 
     assertResult(None)(GameTree.nextHistory(historiesStep1))
   }
@@ -103,9 +99,9 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    val expected: List[History] = List(History(startState, Path.empty))
+    val expected = Stream(History(startState, Path.empty))
 
-    val actual: List[History] = GameTree.build(startState).histories
+    val actual = GameTree.build(startState).histories
 
     assertResult(expected)(actual)
   }
@@ -120,43 +116,55 @@ class GameTreeSpec extends FlatSpec {
     assertResult(2)(GameTree.build(startState).histories.size)
   }
 
+  it should "build shorter paths first" in {
+    val startState: State = GameFactory.state(
+      "xaax"
+      , "a".toSet, 'x')
+
+    val paths = GameTree.build(startState).histories.map(_.path)
+
+    assert(paths.forall(_.moves.size < 2))
+  }
 
   it should "have 4 paths" in {
     def createState(str: String): State = GameFactory.state(
       str, "ab".toSet, 'x')
 
-    val startState =
+    val startState = createState{
       """xxxx
         |aaxb
         |xxxb
       """.stripMargin
+    }
 
+    val states = GameTree
+      .build(startState)
+      .histories.map(_.state)
 
-    val possibleStates: Set[State] = Set(
-      startState,
+    assertResult(4)(states.size)
+
+    assert(states.contains(startState))
+
+    assert(states.contains(createState{
       """xxxb
         |aaxb
         |xxxx
-      """.stripMargin,
+      """.stripMargin
+    }))
+
+      assert(states.contains(createState{
       """xxxb
         |xaab
         |xxxx
-      """.stripMargin,
-      """xxxa
+      """.stripMargin
+    }))
+
+      assert(states.contains(createState{
+      """xxxx
         |xaab
         |xxxb
       """.stripMargin
-    ).map(createState)
-
-    val tree = GameTree.build(createState(startState))
-
-    tree.histories.map(_.path).foreach(println)
-
-    assertResult(possibleStates.size)(tree.histories.size)
-
-    tree.histories.map(_.state).foreach(st =>
-      assert(possibleStates.contains(st))
-    )
+    }))
   }
 
 }

@@ -30,10 +30,10 @@ object RushHourApp {
 
     gameTree.histories.map(_.path).foreach(println)
 
-    val solution: Path = gameTree.solution(finalCarPosition).get
+    val solution = gameTree.solution(finalCarPosition)
 
     println("solution:")
-    println(solution.moves.size)
+    solution match {case Some(s) => println(s.moves.size)}
     println(solution)
   }
 

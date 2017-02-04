@@ -45,5 +45,5 @@ object GameFactory {
     carIds.map(positionsForChar(_, input))
 
   def state(inputMap: String, carIds: Set[Char], emptyPlaceId: Char): State =
-    State(createField(inputMap, carIds + emptyPlaceId), cars(inputMap, carIds))
+    State(cars(inputMap, carIds))(createField(inputMap, carIds + emptyPlaceId))
 }

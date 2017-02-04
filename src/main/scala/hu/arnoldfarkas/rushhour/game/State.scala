@@ -7,7 +7,7 @@ object State {
     state.cars.contains(car)
 }
 
-case class State(val field: Field, val cars: Set[Car]) {
+case class State(val cars: Set[Car])(implicit field: Field) {
 
   override def toString: String = "State: "+ cars.toString()
 
