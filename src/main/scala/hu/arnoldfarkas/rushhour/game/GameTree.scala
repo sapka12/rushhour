@@ -1,33 +1,38 @@
 package hu.arnoldfarkas.rushhour.game
 
+import hu.arnoldfarkas.rushhour.game.GameTree._
+
 object GameTree {
 
-  def tree[A](historiesInLayer: Set[History], visited: Set[State], layer: Int): Stream[Set[History]] = {
+  type HistoryLayer = Set[History]
 
-    if (historiesInLayer isEmpty) Stream.empty[Set[History]]
+  def tree[A](historyLayer: HistoryLayer, visited: Set[State]): Stream[HistoryLayer] = {
+
+    if (historyLayer isEmpty) Stream.empty[HistoryLayer]
     else {
-      val historiesInNextLayer = (for {
-        history <- historiesInLayer
-        nextHistory <- history.next()
-        if (!visited.contains(nextHistory.state))
-      } yield nextHistory)
-        //TODO
-        .groupBy(_.state).values.map(_.head).toSet
+      val nextLayer = (
+        for {
+          history <- historyLayer
+          nextHistory <- history.next()
+          if (!visited.contains(nextHistory.state))
+        } yield nextHistory
+        )
+        .groupBy(_.state)
 
-      val allVisited = historiesInNextLayer.map(_.state) ++ visited
+      val historiesInNextLayer = nextLayer.values.map(_.head).toSet
 
-      historiesInLayer #:: tree(historiesInNextLayer, allVisited, layer + 1)
+      historyLayer #:: tree(historiesInNextLayer, visited ++ nextLayer.keySet)
     }
   }
 
   def build(startState: State): GameTree = {
     val initialHistory = History(startState, Path.empty)
-    val histories = tree(Set(initialHistory), Set(startState), 0)
+    val histories = tree(Set(initialHistory), Set(startState))
     GameTree(histories)
   }
 }
 
-case class GameTree(histories: Stream[Set[History]]) {
+case class GameTree(histories: Stream[HistoryLayer]) {
   def solution(finalCarPos: Car): Stream[Path] = for {
     historyLevel <- histories
     history <- historyLevel
