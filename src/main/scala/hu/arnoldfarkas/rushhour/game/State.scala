@@ -16,10 +16,10 @@ case class State(val cars: Set[Car])(implicit field: Field) {
     case _ => false
   }
 
-  def withMove(c: Car, move: Move): State =
+  private def withMove(c: Car, move: Move): State =
     copy(cars = cars - c + move.car)
 
-  def isValid: Boolean = {
+  private def isValid: Boolean = {
     val allPos = cars.toList.flatMap(_.positions)
     allPos.toSet.size == allPos.size
   }

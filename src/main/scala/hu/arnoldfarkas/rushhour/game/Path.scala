@@ -4,10 +4,6 @@ object Path {
   val empty = Path(List.empty[Move])
 }
 
-object Field {
-  def sqField(size: Int)(pos: Pos): Boolean =
-    pos.x >= 0 && pos.x < size && pos.y >= 0 && pos.y < size
-}
 
 case class Field(f: Pos => Boolean)
 
@@ -34,10 +30,8 @@ case class Path(moves: List[Move]) {
 }
 
 case class History(state: State, path: Path) {
-  def next() : Set[History] = {
-    val n = state.validMoves.map(x => {
+  def next() : Set[History] = state.validMoves
+    .map(x => {
       History(x._3, Path(x._2 :: path.moves))
     })
-    n
-  }
 }

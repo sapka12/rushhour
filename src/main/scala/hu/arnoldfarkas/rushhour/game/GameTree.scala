@@ -6,26 +6,27 @@ object GameTree {
 
   type HistoryLayer = Set[History]
 
-  def tree[A](historyLayer: HistoryLayer, visited: Set[State]): Stream[HistoryLayer] = {
-
-    if (historyLayer isEmpty) Stream.empty[HistoryLayer]
-    else {
-      val nextLayer = (
-        for {
-          history <- historyLayer
-          nextHistory <- history.next()
-          if (!visited.contains(nextHistory.state))
-        } yield nextHistory
-        )
-        .groupBy(_.state)
-
-      val historiesInNextLayer = nextLayer.values.map(_.head).toSet
-
-      historyLayer #:: tree(historiesInNextLayer, visited ++ nextLayer.keySet)
-    }
-  }
-
   def build(startState: State): GameTree = {
+
+    def tree[A](historyLayer: HistoryLayer, visited: Set[State]): Stream[HistoryLayer] = {
+
+      if (historyLayer isEmpty) Stream.empty[HistoryLayer]
+      else {
+        val nextLayer = (
+          for {
+            history <- historyLayer
+            nextHistory <- history.next()
+            if (!visited.contains(nextHistory.state))
+          } yield nextHistory
+          )
+          .groupBy(_.state)
+
+        val historiesInNextLayer = nextLayer.values.map(_.head).toSet
+
+        historyLayer #:: tree(historiesInNextLayer, visited ++ nextLayer.keySet)
+      }
+    }
+
     val initialHistory = History(startState, Path.empty)
     val histories = tree(Set(initialHistory), Set(startState))
     GameTree(histories)

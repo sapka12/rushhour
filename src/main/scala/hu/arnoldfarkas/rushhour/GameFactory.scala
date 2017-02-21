@@ -4,7 +4,6 @@ import hu.arnoldfarkas.rushhour.game._
 
 object GameFactory {
 
-
   private def toMatrix(input: String) =
     input.split("\n").toList.map(_.toList)
 

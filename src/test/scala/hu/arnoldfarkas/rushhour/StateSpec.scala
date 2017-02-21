@@ -6,6 +6,9 @@ import Field._
 
 class StateSpec extends FlatSpec {
 
+  def sqField(size: Int)(pos: Pos): Boolean =
+    pos.x >= 0 && pos.x < size && pos.y >= 0 && pos.y < size
+
   "State" should "equals" in {
     implicit val f: Field = Field(_ => true)
 
