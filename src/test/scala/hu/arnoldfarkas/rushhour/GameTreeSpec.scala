@@ -38,9 +38,9 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    val expected = Stream(Set(History(startState, Path.empty)))
+    val expected = Stream(History(startState, Path.empty))
 
-    val actual = GameTree.build(startState).histories
+    val actual = GameTree.build(startState)
 
     assertResult(expected)(actual)
   }
@@ -52,7 +52,7 @@ class GameTreeSpec extends FlatSpec {
       """.stripMargin
       , "ab".toSet, 'x')
 
-    assertResult(2)(GameTree.build(startState).histories.size)
+    assertResult(2)(GameTree.build(startState).size)
   }
 
 //  it should "build shorter paths first" in {
