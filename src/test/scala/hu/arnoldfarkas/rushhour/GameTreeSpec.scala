@@ -1,109 +1,41 @@
 package hu.arnoldfarkas.rushhour
 
 import hu.arnoldfarkas.rushhour.game._
-import org.scalatest.FlatSpec
+import org.scalatest.{FlatSpec, Matchers}
 
-class GameTreeSpec extends FlatSpec {
+class GameTreeSpec extends FlatSpec with Matchers {
 
-  behavior of "tree"
+  behavior of "solve"
 
-  it should "end" in {
-    def tree[A](visited: List[A], next: List[A] => Option[A]): List[A] = {
-      next(visited) match {
-        case None => visited
-        case Some(elem) => tree(elem :: visited, next)
-      }
-    }
+  it should "solve the 40th card from RushHourJunior" in {
 
-    val integers = List(5)
-    def method(ints: List[Int]): Option[Int] =
-      if (ints.min > 1) {
-        val next = ints.min - 1
-        Some(next)
-      }
-      else None
+    val maxNumOfStepsInSolution = 38
 
-    def none(i: List[Int]) = None
-
-    assertResult(List(5))(tree(integers, none))
-    assertResult(List(1,2,3,4,5))(tree(integers, method))
-  }
-
-  behavior of "build"
-
-  it should "no other state" in {
+    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
     val startState: State = GameFactory.state(
-      """xxb
-        |aab
+      """aaxxbo
+        |cdxxbo
+        |cdxXXo
+        |pxxexx
+        |pffegg
+        |phhqqq
       """.stripMargin
-      , "ab".toSet, 'x')
+      , "abcdoXpfhegq".toSet, 'x')
 
-    val expected = Stream(History(startState, Path.empty))
+    val solution = GameTree.solve(startState, finalCarPosition)
 
-    val actual = GameTree.build(startState)
-
-    assertResult(expected)(actual)
+    solution.get.moves.size should be <= maxNumOfStepsInSolution
   }
 
-  it should "have 2 states" in {
+  it should "not give a solution when there is no" in {
+
+    val impossibleCarPosition: Car = Car(Set(Pos(1, 1), Pos(1, 2)), 'a')
     val startState: State = GameFactory.state(
-      """xxxb
-        |aaxb
+      """aax
+        |xxx
       """.stripMargin
-      , "ab".toSet, 'x')
+      , "a".toSet, 'x')
 
-    assertResult(2)(GameTree.build(startState).size)
+    GameTree.solve(startState, impossibleCarPosition) shouldBe None
   }
-
-//  it should "build shorter paths first" in {
-//    val startState: State = GameFactory.state(
-//      "xaax"
-//      , "a".toSet, 'x')
-//
-//    val paths = GameTree.build(startState).histories.map(_.path)
-//
-//    assert(paths.forall(_.moves.size < 2))
-//  }
-
-//  it should "have 4 paths" in {
-//    def createState(str: String): State = GameFactory.state(
-//      str, "ab".toSet, 'x')
-//
-//    val startState = createState{
-//      """xxxx
-//        |aaxb
-//        |xxxb
-//      """.stripMargin
-//    }
-//
-//    val states = GameTree
-//      .build(startState)
-//      .histories.map(_.state)
-//
-//    assertResult(4)(states.size)
-//
-//    assert(states.contains(startState))
-//
-//    assert(states.contains(createState{
-//      """xxxb
-//        |aaxb
-//        |xxxx
-//      """.stripMargin
-//    }))
-//
-//      assert(states.contains(createState{
-//      """xxxb
-//        |xaab
-//        |xxxx
-//      """.stripMargin
-//    }))
-//
-//      assert(states.contains(createState{
-//      """xxxx
-//        |xaab
-//        |xxxb
-//      """.stripMargin
-//    }))
-//  }
-
 }

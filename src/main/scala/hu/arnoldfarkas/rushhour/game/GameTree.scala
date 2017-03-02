@@ -1,26 +1,28 @@
 package hu.arnoldfarkas.rushhour.game
 
-import hu.arnoldfarkas.rushhour.game.GameTree._
-
 object GameTree {
 
   type HistoryLayer = Set[History]
 
+  private def nextLayer(historyLayer: HistoryLayer, visited: Set[State]): (HistoryLayer, Set[State]) = {
+
+    val layer = (
+      for {
+        history <- historyLayer.par
+        nextHistory <- history.next()
+        if (!visited.contains(nextHistory.state))
+      } yield nextHistory
+      )
+      .groupBy(_.state).seq
+
+    (layer.values.map(_.head).toSet, layer.keySet)
+  }
+
   private def tree[A](historyLayer: HistoryLayer, visited: Set[State]): Stream[HistoryLayer] =
     if (historyLayer isEmpty) Stream.empty[HistoryLayer]
     else {
-      val nextLayer = (
-        for {
-          history <- historyLayer
-          nextHistory <- history.next()
-          if (!visited.contains(nextHistory.state))
-        } yield nextHistory
-        )
-        .groupBy(_.state)
-
-      val historiesInNextLayer = nextLayer.values.map(_.head).toSet
-
-      historyLayer #:: tree(historiesInNextLayer, visited ++ nextLayer.keySet)
+      val (nextHistoryLayer, nextStates) = nextLayer(historyLayer, visited)
+      historyLayer #:: tree(nextHistoryLayer, visited ++ nextStates)
     }
 
   def build(startState: State): Stream[History] =
