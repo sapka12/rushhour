@@ -43,6 +43,8 @@ object GameFactory {
   def cars(input: String, carIds: Set[Char]): Set[Car] =
     carIds.map(positionsForChar(_, input))
 
-  def state(inputMap: String, carIds: Set[Char], emptyPlaceId: Char): State =
+  def state(inputMap: String, emptyPlaceId: Char): State = {
+    val carIds = inputMap.trim.toSet.filter(_ != emptyPlaceId).filter(_ != '\n')
     State(cars(inputMap, carIds))(createField(inputMap, carIds + emptyPlaceId))
+  }
 }

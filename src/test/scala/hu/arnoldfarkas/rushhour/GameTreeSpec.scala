@@ -19,8 +19,7 @@ class GameTreeSpec extends FlatSpec with Matchers {
         |pxxexx
         |pffegg
         |phhqqq
-      """.stripMargin
-      , "abcdoXpfhegq".toSet, 'x')
+      """.stripMargin, 'x')
 
     val solution = GameTree.solve(startState, finalCarPosition)
 
@@ -33,8 +32,7 @@ class GameTreeSpec extends FlatSpec with Matchers {
     val startState: State = GameFactory.state(
       """aax
         |xxx
-      """.stripMargin
-      , "a".toSet, 'x')
+      """.stripMargin, 'x')
 
     GameTree.solve(startState, impossibleCarPosition) shouldBe None
   }

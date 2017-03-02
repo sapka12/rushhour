@@ -48,7 +48,6 @@ class GameFactorySpec extends FlatSpec {
 
   it should "define final state" in {
     val finalCarPos: Car = Car(Set(Pos(0, 2), Pos(1, 2)), 'a')
-    val carIds = "abc".toSet
     val emptySpace = 'x'
 
     val theFinalState: State = GameFactory.state(
@@ -58,7 +57,7 @@ class GameFactorySpec extends FlatSpec {
         |xxxxcc
         |xxxxxx
         |xxxxxx
-      """.stripMargin, carIds, emptySpace)
+      """.stripMargin, emptySpace)
 
     val notFinalState: State =
       GameFactory.state(
@@ -68,7 +67,7 @@ class GameFactorySpec extends FlatSpec {
           |xxxccb
           |xxxxxb
           |xxxxxb
-      """.stripMargin, carIds, emptySpace)
+      """.stripMargin, emptySpace)
 
     assert(State.isFinal(theFinalState, finalCarPos))
     assert(!State.isFinal(notFinalState, finalCarPos))
