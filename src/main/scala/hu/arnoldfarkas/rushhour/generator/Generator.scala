@@ -4,7 +4,7 @@ object Generator extends App {
 
   println("--- started ---")
 
-  def generate[T](values: List[T], length: Int): List[List[T]] = {
+  def generate[T](values: List[T], length: Int): Stream[List[T]] = {
 
     def init(e: T) =
       (for {
@@ -17,44 +17,38 @@ object Generator extends App {
     val initElement = init(originalHead)
     val endElement = init(originalLast)
 
-    def inc(elem: Seq[T]): Seq[T] = {
+    def stream: Stream[List[T]] = {
 
-      def incIdx(elem: Seq[T], idx: Int): Seq[T] = {
-        if (elem(idx) == originalLast) {
-          val e: Seq[T] = elem.patch(idx, Seq(originalHead), 1)
-          incIdx(e, idx + 1)
-        } else {
-          val actualVal = values.indexOf(elem(idx))
-          val incVal = values(actualVal + 1)
-          elem.patch(idx, Seq(incVal), 1)
-        }
+      def streamBuilder(n: List[T]): Stream[List[T]] = {
+        if (n == endElement) Stream(n)
+        else n #:: streamBuilder(inc(n).toList)
       }
 
-      incIdx(elem, 0)
-    }
-
-    def addNextElement(lastElem: List[T], aggr: List[List[T]]): List[List[T]] = {
-      if (lastElem == endElement) lastElem :: aggr
-      else {
-        addNextElement(inc(lastElem).toList, lastElem :: aggr)
+      def inc(elem: Seq[T]): Seq[T] = {
+        val asNum = elem.map(e => values.indexOf(e)).mkString
+        val next = BigInt.apply(asNum, values.size) + 1
+        val value = next.toString(values.size)
+        val diff = length - value.size
+        ((for (_ <- 1 to diff) yield "0").mkString + value).map(i =>
+          values(i.toString.toInt))
       }
+
+      streamBuilder(initElement)
     }
 
-    addNextElement(initElement, List())
+    stream
   }
 
-  val values = List(0, 1, 2, 3, 5)
+  val values = List(0, 1, 2, 3)
 
-  val length = 11
+  val length = 3
 
   val start = System.currentTimeMillis()
 
-  val result = generate(values, length).map(_.mkString)
+  val result = generate(values, length).toList.map(_.mkString)
 
   val end = System.currentTimeMillis()
 
-  println(result.mkString(", "))
-
+  println(result.mkString("\n"))
   println(end - start)
-
 }
