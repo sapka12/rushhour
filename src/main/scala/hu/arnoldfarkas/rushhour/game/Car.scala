@@ -36,16 +36,4 @@ case class Car(val positions: Set[Pos], val sign: Char) {
       case None => None
     }).flatten
   }
-
-  private def toOrderedList(ps: Set[Pos]): List[Pos] = ps.toList.sortWith{
-    case (Pos(x1, y1), Pos(x2, y2)) =>
-      if(x1 == x2) y1 < y2
-      else x1 < x2
-  }
-
-  override def equals(obj: scala.Any): Boolean = obj match {
-    case Car(cPos, cSign) => cSign == sign &&
-      toOrderedList(cPos) == toOrderedList(positions)
-    case _ => false
-  }
 }

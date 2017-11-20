@@ -14,15 +14,15 @@ case object Left extends Step
 case object Right extends Step
 
 case class RushHourMove(val car: Car, val step: Step) {
-  override def toString: String =
-    car.sign.toString + {
-      step match {
-        case Up => "^"
-        case Down => "v"
-        case Left => "<"
-        case Right => ">"
-      }
-    }
+//  override def toString: String =
+//    car.sign.toString + {
+//      step match {
+//        case Up => "^"
+//        case Down => "v"
+//        case Left => "<"
+//        case Right => ">"
+//      }
+//    }
 }
 
 case class Path(moves: List[RushHourMove]) {
