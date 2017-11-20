@@ -4,7 +4,7 @@ import org.scalatest.FlatSpec
 import hu.arnoldfarkas.rushhour.game._
 import Field._
 
-class StateSpec extends FlatSpec {
+class RushHourStateSpec extends FlatSpec {
 
   def sqField(size: Int)(pos: Pos): Boolean =
     pos.x >= 0 && pos.x < size && pos.y >= 0 && pos.y < size
@@ -17,8 +17,8 @@ class StateSpec extends FlatSpec {
     val bCar = Car(Set(Pos(2, 3), Pos(3, 3)), 'a')
     val bCar2 = Car(Set(Pos(3, 3), Pos(2, 3)), 'a')
 
-    val s1 = State(Set(aCar, bCar))
-    val s2 = State(Set(aCar2, bCar2))
+    val s1 = RushHourState(Set(aCar, bCar))
+    val s2 = RushHourState(Set(aCar2, bCar2))
 
     assert(s1 == s2)
   }
@@ -31,16 +31,16 @@ class StateSpec extends FlatSpec {
     val a = Car(Set(Pos(0, 0), Pos(0, 1)), 'a')
     val b = Car(Set(Pos(0, 2), Pos(1, 2)), 'b')
 
-    val state = State(Set(a, b))
+    val state = RushHourState(Set(a, b))
 
     val b_v2 = b.copy(positions = Set(Pos(2, 2), Pos(1, 2)))
 
-    val actual: Set[(Car, Move, State)] = state.validMoves
-    val expected: Set[(Car, Move, State)] = Set(
+    val actual: Set[(Car, RushHourMove, RushHourState)] = state.validMoves
+    val expected: Set[(Car, RushHourMove, RushHourState)] = Set(
       (
         b,
-        Move(b_v2, Right),
-        State(
+        RushHourMove(b_v2, Right),
+        RushHourState(
           Set(
             b_v2,
             a
@@ -58,21 +58,21 @@ class StateSpec extends FlatSpec {
     val b = Car(Set(Pos(5, 0), Pos(5, 2), Pos(5, 1)), 'b')
     val c = Car(Set(Pos(5, 3), Pos(4, 3)), 'c')
 
-    val state = State(Set(a, b, c))
+    val state = RushHourState(Set(a, b, c))
 
     val a_v2 = a.copy(positions = Set(Pos(2, 2), Pos(1, 2)))
     val c_v2 = c.copy(positions = Set(Pos(3, 3), Pos(4, 3)))
 
-    val actual: Set[(Car, Move, State)] = state.validMoves
-    val expected: Set[(Car, Move, State)] = Set(
+    val actual: Set[(Car, RushHourMove, RushHourState)] = state.validMoves
+    val expected: Set[(Car, RushHourMove, RushHourState)] = Set(
       (
         a,
-        Move(a_v2, Right),
-        State(Set(a_v2,b,c))
+        RushHourMove(a_v2, Right),
+        RushHourState(Set(a_v2,b,c))
       ),(
         c,
-        Move(c_v2, Left),
-        State(Set(a,b,c_v2))
+        RushHourMove(c_v2, Left),
+        RushHourState(Set(a,b,c_v2))
       )
     )
 

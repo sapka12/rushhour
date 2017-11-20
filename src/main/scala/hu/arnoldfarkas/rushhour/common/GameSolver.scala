@@ -8,9 +8,9 @@ trait GameSolver[S, M] {
 
   def isFinal(gameState: S): Boolean
 
-  type Path = List[M]
-  type History = (S, Path)
-  type HistoryLayer = Set[History] // Set[(S, List[M])]
+  private type Path = List[M]
+  private type History = (S, Path)
+  private type HistoryLayer = Set[History] // Set[(S, List[M])]
 
   private def nextLayer(historyLayer: HistoryLayer, visited: Set[S]): (HistoryLayer, Set[S]) = {
 
@@ -42,13 +42,12 @@ trait GameSolver[S, M] {
       Set(startState)
     ).flatten
 
-  def solve(startState: S): Option[Path] =
-    solution(build(startState)).headOption
-
-  def solution(histories: Stream[History]): Stream[Path] =
+  private def solution(histories: Stream[History]): Stream[Path] =
     for {
       (state, path) <- histories
       if isFinal(state)
     } yield path
 
+  def solve(startState: S): Option[List[M]] =
+    solution(build(startState)).headOption
 }

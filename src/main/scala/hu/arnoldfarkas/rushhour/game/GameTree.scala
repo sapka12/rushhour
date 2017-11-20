@@ -1,10 +1,12 @@
 package hu.arnoldfarkas.rushhour.game
 
+import hu.arnoldfarkas.rushhour.rushhour.RushHourGameSolver
+
 object GameTree {
 
   type HistoryLayer = Set[History]
 
-  private def nextLayer(historyLayer: HistoryLayer, visited: Set[State]): (HistoryLayer, Set[State]) = {
+  private def nextLayer(historyLayer: HistoryLayer, visited: Set[RushHourState]): (HistoryLayer, Set[RushHourState]) = {
 
     val layer = (
       for {
@@ -18,14 +20,14 @@ object GameTree {
     (layer.values.map(_.head).toSet, layer.keySet)
   }
 
-  private def tree[A](historyLayer: HistoryLayer, visited: Set[State]): Stream[HistoryLayer] =
+  private def tree[A](historyLayer: HistoryLayer, visited: Set[RushHourState]): Stream[HistoryLayer] =
     if (historyLayer isEmpty) Stream.empty[HistoryLayer]
     else {
       val (nextHistoryLayer, nextStates) = nextLayer(historyLayer, visited)
       historyLayer #:: tree(nextHistoryLayer, visited ++ nextStates)
     }
 
-  def build(startState: State): Stream[History] =
+  def build(startState: RushHourState): Stream[History] =
     tree(
       Set(History(startState, Path.empty)),
       Set(startState)
@@ -33,9 +35,10 @@ object GameTree {
 
   def solution(histories: Stream[History], finalCarPos: Car): Stream[Path] =
     histories
-      .filter(history => State.isFinal(history.state, finalCarPos))
+      .filter(history => RushHourState.isFinal(history.state, finalCarPos))
       .map(_.path)
 
-  def solve(startState: State, finalCarPos: Car): Option[Path] =
-    solution(build(startState), finalCarPos).headOption
+  def solve(startState: RushHourState, finalCarPos: Car): Option[Path] =
+//    solution(build(startState), finalCarPos).headOption
+      new RushHourGameSolver(startState.cars, finalCarPos).solve(startState).map(Path(_))
 }

@@ -50,7 +50,7 @@ class GameFactorySpec extends FlatSpec {
     val finalCarPos: Car = Car(Set(Pos(0, 2), Pos(1, 2)), 'a')
     val emptySpace = 'x'
 
-    val theFinalState: State = GameFactory.state(
+    val theFinalState: RushHourState = GameFactory.state(
       """xxxxxb
         |xxxxxb
         |aaxxxb
@@ -59,7 +59,7 @@ class GameFactorySpec extends FlatSpec {
         |xxxxxx
       """.stripMargin, emptySpace)
 
-    val notFinalState: State =
+    val notFinalState: RushHourState =
       GameFactory.state(
         """xxxxxx
           |xxxxxx
@@ -69,8 +69,8 @@ class GameFactorySpec extends FlatSpec {
           |xxxxxb
       """.stripMargin, emptySpace)
 
-    assert(State.isFinal(theFinalState, finalCarPos))
-    assert(!State.isFinal(notFinalState, finalCarPos))
+    assert(RushHourState.isFinal(theFinalState, finalCarPos))
+    assert(!RushHourState.isFinal(notFinalState, finalCarPos))
   }
 
   it should "find the cars" in {

@@ -7,12 +7,31 @@ class GameTreeSpec extends FlatSpec with Matchers {
 
   behavior of "solve"
 
+    it should "solve 1 step" in {
+
+      val maxNumOfStepsInSolution = 1
+
+      val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
+      val startState: RushHourState = GameFactory.state(
+        """xxxxxx
+          |xxxxxx
+          |xxxXXx
+          |xxxxxx
+          |xxxxxx
+          |xxxxxx
+        """.stripMargin, 'x')
+
+      val solution = GameTree.solve(startState, finalCarPosition)
+
+      solution.get.moves.size should be <= maxNumOfStepsInSolution
+    }
+
   it should "solve the 40th card from RushHourJunior" in {
 
     val maxNumOfStepsInSolution = 38
 
     val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
-    val startState: State = GameFactory.state(
+    val startState: RushHourState = GameFactory.state(
       """aaxxbo
         |cdxxbo
         |cdxXXo
@@ -29,7 +48,7 @@ class GameTreeSpec extends FlatSpec with Matchers {
   it should "not give a solution when there is no" in {
 
     val impossibleCarPosition: Car = Car(Set(Pos(1, 1), Pos(1, 2)), 'a')
-    val startState: State = GameFactory.state(
+    val startState: RushHourState = GameFactory.state(
       """aax
         |xxx
       """.stripMargin, 'x')
