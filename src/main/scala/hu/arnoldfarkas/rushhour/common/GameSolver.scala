@@ -48,6 +48,6 @@ trait GameSolver[S, M] {
       if isFinal(state)
     } yield path
 
-  def solve(startState: S): Option[List[M]] =
+  def solve(startState: S): Option[Path] =
     solution(build(startState)).headOption
 }

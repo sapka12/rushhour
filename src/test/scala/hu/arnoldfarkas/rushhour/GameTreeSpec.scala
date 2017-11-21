@@ -5,26 +5,25 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class GameTreeSpec extends FlatSpec with Matchers {
 
-  behavior of "solve"
 
-    it should "solve 1 step" in {
+  it should "solve 1 step" in {
 
-      val maxNumOfStepsInSolution = 1
+    val maxNumOfStepsInSolution = 1
 
-      val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
-      val startState: RushHourState = GameFactory.state(
-        """xxxxxx
-          |xxxxxx
-          |xxxXXx
-          |xxxxxx
-          |xxxxxx
-          |xxxxxx
-        """.stripMargin, 'x')
+    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
+    val startState: RushHourState = GameFactory.state(
+      """xxxxxx
+        |xxxxxx
+        |xxxXXx
+        |xxxxxx
+        |xxxxxx
+        |xxxxxx
+      """.stripMargin, 'x')
 
-      val solution = GameTree.solve(startState, finalCarPosition)
+    val solution = GameTree.solve(startState, finalCarPosition)
 
-      solution.get.moves.size should be <= maxNumOfStepsInSolution
-    }
+    solution.get.moves.size should be <= maxNumOfStepsInSolution
+  }
 
   it should "solve the 40th card from RushHourJunior" in {
 

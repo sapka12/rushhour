@@ -4,6 +4,8 @@ import hu.arnoldfarkas.rushhour.game._
 
 case class Car(val positions: Set[Pos], val sign: Char) {
 
+  def hasCommonPos(c: Car): Boolean = !c.positions.forall(!positions.contains(_))
+
   def validMoves: Set[RushHourMove] = {
 
     def validSteps: Set[Step] = {
@@ -32,7 +34,7 @@ case class Car(val positions: Set[Pos], val sign: Char) {
     }
 
     validSteps.map(step => goBy(step) match {
-      case Some(car) => Some(RushHourMove(car, step))
+      case Some(car) => Some(RushHourMove(car.sign, step))
       case None => None
     }).flatten
   }

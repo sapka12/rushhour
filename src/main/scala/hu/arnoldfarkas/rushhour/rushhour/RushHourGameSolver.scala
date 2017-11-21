@@ -4,43 +4,44 @@ import hu.arnoldfarkas.rushhour.game._
 import hu.arnoldfarkas.rushhour.common.GameSolver
 import hu.arnoldfarkas.rushhour.game.{Car, RushHourMove, RushHourState}
 
-class RushHourGameSolver(cars: Set[Car], finalCarPos: Car) extends GameSolver[RushHourState, RushHourMove] {
+class RushHourGameSolver(carSigns: Set[Char], finalCarPos: Car) extends GameSolver[RushHourState, RushHourMove] {
 
   override val moves: Set[RushHourMove] = for {
-    car <- cars
+    car <- carSigns
     step <- Set(Up, Down, Left, Right)
   } yield RushHourMove(car, step)
 
-  override def step(gameState: RushHourState, move: RushHourMove): Option[RushHourState] =
-    {
-      val valid = gameState
-        .validMoves
+  override def step(gameState: RushHourState, move: RushHourMove): Option[RushHourState] = {
+    val newStateCars = gameState.cars.map(c =>
+      if (c.sign == move.carSign) move.step match {
+        case Up => c.copy(positions = c.positions.map(p => Pos(p.x, p.y - 1)))
+        case Down => c.copy(positions = c.positions.map(p => Pos(p.x, p.y + 1)))
+        case Left => c.copy(positions = c.positions.map(p => Pos(p.x, p.y - 1)))
+        case Right => c.copy(positions = c.positions.map(p => Pos(p.x, p.y + 1)))
+      }
+      else c
+    )
 
-      println()
-      println()
-      //TODO fix Set[Pos]
-      println("VALID:")
-      println(s"$move")
-      println(s"$valid")
-      println()
-      println()
-      println()
-      println()
+    def isValid(cars: Set[Car]): Boolean = {
+      val inField = (for {
+        car <- cars
+        pos <- car.positions
+      } yield pos).forall(gameState.field.f(_))
 
-      valid.filter{
-          case (car, rhMove, state) =>
-            val eqPos = move.car.positions.sameElements(rhMove.car.positions)
-            val eqSign = move.car.sign == rhMove.car.sign
-            val eqStep = move.step == rhMove.step
-            val eq = eqPos && eqSign && eqStep
-            println(s"$move == $rhMove  ===>  $eq  [$eqPos, $eqSign, $eqStep]")
-            eq
-        }
-        .map{
-          case (car, rhMove, state) => state
-        }
-        .toList.headOption
+
+      val noOverlap = (for {
+        car <- cars
+        car2 <- cars
+        if (car != car2)
+        if (car hasCommonPos car2)
+      } yield car).isEmpty
+
+      inField && noOverlap
     }
+
+    if (isValid(newStateCars)) Some(gameState.copy(cars = newStateCars)(field = gameState.field))
+    else None
+  }
 
   override def isFinal(gameState: RushHourState) = RushHourState.isFinal(gameState, finalCarPos)
 }
