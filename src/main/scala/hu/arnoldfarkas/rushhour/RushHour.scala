@@ -1,6 +1,7 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game.{Car, GameTree}
+import hu.arnoldfarkas.rushhour.game.Car
+import hu.arnoldfarkas.rushhour.rushhour.RushHourGameSolver
 
 import scala.io.Source
 
@@ -20,7 +21,8 @@ object RushHour {
       'x'
     ).cars.head
 
-    val solution = GameTree.solve(state, finish)
+    val gameSolver = new RushHourGameSolver(state.cars.map(_.sign), finish)
+    val solution = gameSolver.solve(state)
 
     println(solution)
   }

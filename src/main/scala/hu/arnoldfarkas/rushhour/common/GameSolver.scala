@@ -2,7 +2,7 @@ package hu.arnoldfarkas.rushhour.common
 
 trait GameSolver[S, M] {
 
-  val moves: Set[M]
+  val actions: Set[M]
 
   def step(gameState: S, move: M): Option[S]
 
@@ -17,7 +17,7 @@ trait GameSolver[S, M] {
     val layer =
       for {
         (state, path) <- historyLayer
-        (nextState, move) <- moves.map(m => (step(state, m), m))
+        (nextState, move) <- actions.map(m => (step(state, m), m))
         if nextState.isDefined
         if !visited.contains(state)
       } yield (nextState.get, move :: path)

@@ -6,7 +6,7 @@ import hu.arnoldfarkas.rushhour.game.{Car, RushHourMove, RushHourState}
 
 class RushHourGameSolver(carSigns: Set[Char], finalCarPos: Car) extends GameSolver[RushHourState, RushHourMove] {
 
-  override val moves: Set[RushHourMove] = for {
+  override val actions: Set[RushHourMove] = for {
     car <- carSigns
     step <- Set(Up, Down, Left, Right)
   } yield RushHourMove(car, step)

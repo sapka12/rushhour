@@ -1,5 +1,7 @@
 package hu.arnoldfarkas.rushhour
 
+import hu.arnoldfarkas.rushhour.game.{Car, Pos, RushHourMove, RushHourState}
+import hu.arnoldfarkas.rushhour.rushhour.RushHourGameSolver
 import org.scalatest.{FlatSpec, Matchers}
 
 class RushHourGameSolverSpec extends FlatSpec with Matchers {
@@ -9,4 +11,66 @@ class RushHourGameSolverSpec extends FlatSpec with Matchers {
     assert(Set(1, 2, 3) == Set(3, 2, 1))
     assert(Set(1, 2, 3, 4, 5) == Set(5, 4, 3, 2, 1))
   }
+
+  behavior of "solver"
+
+  it should "solve 1 step" in {
+
+    val maxNumOfStepsInSolution = 1
+
+    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
+    val startState: RushHourState = GameFactory.state(
+      """xxxxxx
+        |xxxxxx
+        |xxxXXx
+        |xxxxxx
+        |xxxxxx
+        |xxxxxx
+      """.stripMargin, 'x')
+
+    val solver = new RushHourGameSolver(startState.cars.map(_.sign), finalCarPosition)
+
+    val solution = solver.solve(startState)
+    val moves: List[RushHourMove] = solution.get
+
+    moves.size should be <= maxNumOfStepsInSolution
+  }
+
+  it should "solve the 40th card from RushHourJunior" in {
+
+    val maxNumOfStepsInSolution = 38
+
+    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
+    val startState: RushHourState = GameFactory.state(
+      """aaxxbo
+        |cdxxbo
+        |cdxXXo
+        |pxxexx
+        |pffegg
+        |phhqqq
+      """.stripMargin, 'x')
+
+    val solver = new RushHourGameSolver(startState.cars.map(_.sign), finalCarPosition)
+
+    val solution = solver.solve(startState)
+    val moves: List[RushHourMove] = solution.get
+
+    moves.size should be <= maxNumOfStepsInSolution
+  }
+
+  it should "not give a solution when there is no" in {
+
+    val impossibleCarPosition: Car = Car(Set(Pos(1, 1), Pos(1, 2)), 'a')
+    val startState: RushHourState = GameFactory.state(
+      """aax
+        |xxx
+      """.stripMargin, 'x')
+
+    val solver = new RushHourGameSolver(startState.cars.map(_.sign), impossibleCarPosition)
+
+    val solution = solver.solve(startState)
+
+    solution shouldBe None
+  }
+
 }
