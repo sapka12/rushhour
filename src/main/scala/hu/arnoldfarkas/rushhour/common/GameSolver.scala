@@ -10,23 +10,23 @@ trait GameSolver[S, M] {
 
   private type Path = List[M]
   private type History = (S, Path)
-  private type HistoryLayer = Set[History] // Set[(S, List[M])]
+  private type HistoryLayer = Set[History]
 
   private def nextLayer(historyLayer: HistoryLayer, visited: Set[S]): (HistoryLayer, Set[S]) = {
 
     val layer =
       for {
-        (state, path) <- historyLayer
+        (state, path) <- historyLayer.par
         (nextState, move) <- actions.map(m => (step(state, m), m))
         if nextState.isDefined
-        if !visited.contains(state)
+        if !visited.contains(nextState.get)
       } yield (nextState.get, move :: path)
 
     val allVisited = visited ++ layer.map{
       case (nextState, _) => nextState
     }
 
-    (layer, allVisited)
+    (layer.seq, allVisited)
   }
 
   private def tree[A](historyLayer: HistoryLayer, visited: Set[S]): Stream[HistoryLayer] =
