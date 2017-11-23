@@ -21,7 +21,7 @@ object RushHour {
       'x'
     ).cars.head
 
-    val gameSolver = new RushHourGameSolver(state.cars.map(_.sign), finish)
+    val gameSolver = new RushHourGameSolver(state.cars, finish)
     val solution = gameSolver.solve(state)
 
     println(solution)

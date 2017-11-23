@@ -14,6 +14,11 @@ trait GameSolver[S, M] {
 
   private def nextLayer(historyLayer: HistoryLayer, visited: Set[S]): (HistoryLayer, Set[S]) = {
 
+    val numOfStatesInLayer = historyLayer.size
+    println(s"numOfStatesInLayer: $numOfStatesInLayer")
+    println(s"visited: ${visited.size}")
+    println()
+
     val layer =
       for {
         (state, path) <- historyLayer.par
@@ -26,14 +31,23 @@ trait GameSolver[S, M] {
       case (nextState, _) => nextState
     }
 
-    (layer.seq, allVisited)
+    val groupedLayer = layer.seq.groupBy{
+      case (s, _) => s
+    }.mapValues(_.map(_._2).foldLeft[List[M]](List()){
+      case (ms, ms2) => if (ms.size < ms2.size) ms else ms2
+    }).toSet
+
+    groupedLayer
+
+    (groupedLayer.seq, allVisited)
   }
 
-  private def tree[A](historyLayer: HistoryLayer, visited: Set[S]): Stream[HistoryLayer] =
+  private def tree[A](historyLayer: HistoryLayer, visited: Set[S], count: Int = 0): Stream[HistoryLayer] =
     if (historyLayer isEmpty) Stream.empty[HistoryLayer]
     else {
+      println(s"layer: $count")
       val (nextHistoryLayer, nextStates) = nextLayer(historyLayer, visited)
-      historyLayer #:: tree(nextHistoryLayer, visited ++ nextStates)
+      historyLayer #:: tree(nextHistoryLayer, visited ++ nextStates, count + 1)
     }
 
   private def build(startState: S): Stream[History] =
@@ -49,5 +63,5 @@ trait GameSolver[S, M] {
     } yield path
 
   def solve(startState: S): Option[Path] =
-    solution(build(startState)).headOption
+    solution(build(startState)).headOption.map(_.reverse)
 }

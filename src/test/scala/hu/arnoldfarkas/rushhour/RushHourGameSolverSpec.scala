@@ -28,7 +28,7 @@ class RushHourGameSolverSpec extends FlatSpec with Matchers {
         |xxxxxx
       """.stripMargin, 'x')
 
-    val solver = new RushHourGameSolver(startState.cars.map(_.sign), finalCarPosition)
+    val solver = new RushHourGameSolver(startState.cars, finalCarPosition)
 
     val solution = solver.solve(startState)
     val moves: List[RushHourMove] = solution.get
@@ -50,7 +50,7 @@ class RushHourGameSolverSpec extends FlatSpec with Matchers {
         |xxxxxx
       """.stripMargin, 'x')
 
-    val solver = new RushHourGameSolver(startState.cars.map(_.sign), finalCarPosition)
+    val solver = new RushHourGameSolver(startState.cars, finalCarPosition)
 
     val solution = solver.solve(startState)
     val moves: List[RushHourMove] = solution.get
@@ -58,27 +58,75 @@ class RushHourGameSolverSpec extends FlatSpec with Matchers {
     moves.size should be <= maxNumOfStepsInSolution
   }
 
-//  it should "solve the 40th card from RushHourJunior" in {
-//
-//    val maxNumOfStepsInSolution = 38
-//
-//    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
-//    val startState: RushHourState = GameFactory.state(
-//      """aaxxbo
-//        |cdxxbo
-//        |cdxXXo
-//        |pxxexx
-//        |pffegg
-//        |phhqqq
-//      """.stripMargin, 'x')
-//
-//    val solver = new RushHourGameSolver(startState.cars.map(_.sign), finalCarPosition)
-//
-//    val solution = solver.solve(startState)
-//    val moves: List[RushHourMove] = solution.get
-//
-//    moves.size should be <= maxNumOfStepsInSolution
-//  }
+  it should "solve 4 step" in {
+
+    val maxNumOfStepsInSolution = 4
+
+    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
+    val startState: RushHourState = GameFactory.state(
+      """xxeddd
+        |xxexxa
+        |xxxXXa
+        |xxcbbb
+        |xxcxxx
+        |xxxxxx
+      """.stripMargin.filterNot(_ == '\r'), 'x')
+
+    val solver = new RushHourGameSolver(startState.cars, finalCarPosition)
+
+    val solution = solver.solve(startState)
+    val moves: List[RushHourMove] = solution.get
+
+    println(solution)
+
+    moves.size should be <= maxNumOfStepsInSolution
+  }
+
+  it should "solve level6 from TrafficHour" in {
+
+    val maxNumOfStepsInSolution = 10
+
+    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
+    val startState: RushHourState = GameFactory.state(
+      """xxxxfg
+        |aaxxfg
+        |XXxxfg
+        |bbxxxx
+        |cxxxxx
+        |cddeex
+      """.stripMargin, 'x')
+
+    val solver = new RushHourGameSolver(startState.cars, finalCarPosition)
+
+    val solution = solver.solve(startState)
+    val moves: List[RushHourMove] = solution.get
+
+    println(solution)
+
+    moves.size should be <= maxNumOfStepsInSolution
+  }
+
+  it should "solve the 40th card from RushHourJunior" in {
+
+    val maxNumOfStepsInSolution = 38
+
+    val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
+    val startState: RushHourState = GameFactory.state(
+      """aaxxbo
+        |cdxxbo
+        |cdxXXo
+        |pxxexx
+        |pffegg
+        |phhqqq
+      """.stripMargin, 'x')
+
+    val solver = new RushHourGameSolver(startState.cars, finalCarPosition)
+
+    val solution = solver.solve(startState)
+    val moves: List[RushHourMove] = solution.get
+
+    moves.size should be <= maxNumOfStepsInSolution
+  }
 
   it should "not give a solution when there is no" in {
 
@@ -88,7 +136,7 @@ class RushHourGameSolverSpec extends FlatSpec with Matchers {
         |xxx
       """.stripMargin, 'x')
 
-    val solver = new RushHourGameSolver(startState.cars.map(_.sign), impossibleCarPosition)
+    val solver = new RushHourGameSolver(startState.cars, impossibleCarPosition)
 
     val solution = solver.solve(startState)
 

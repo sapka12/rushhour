@@ -6,10 +6,16 @@ case class Car(val positions: Set[Pos], val sign: Char) {
 
   def hasCommonPos(c: Car): Boolean = !c.positions.forall(!positions.contains(_))
 
-  lazy val isHorizontal = {
+  def inField(f: Field) = positions.forall(f.f)
+
+  private lazy val isHorizontal = {
     val headY = positions.toList.head.y
     positions.forall(_.y == headY)
   }
+
+  def validStep(step: Step) =
+    (isHorizontal && (step == Left || step == Right)) ||
+      (!isHorizontal && (step == Up || step == Down))
 
   def validMoves: Set[RushHourMove] = {
 
