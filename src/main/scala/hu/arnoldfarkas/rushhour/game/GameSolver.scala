@@ -1,4 +1,4 @@
-package hu.arnoldfarkas.rushhour.common
+package hu.arnoldfarkas.rushhour.game
 
 trait GameSolver[S, M] {
 

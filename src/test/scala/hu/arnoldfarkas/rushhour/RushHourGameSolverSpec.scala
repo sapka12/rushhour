@@ -1,7 +1,6 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game.{Car, Pos, RushHourMove, RushHourState}
-import hu.arnoldfarkas.rushhour.rushhour.RushHourGameSolver
+import hu.arnoldfarkas.rushhour.rushhour._
 import org.scalatest.{FlatSpec, Matchers}
 
 class RushHourGameSolverSpec extends FlatSpec with Matchers {

@@ -1,9 +1,4 @@
-package hu.arnoldfarkas.rushhour.game
-
-object Path {
-  val empty = Path(List.empty[RushHourMove])
-}
-
+package hu.arnoldfarkas.rushhour.rushhour
 
 case class Field(f: Pos => Boolean)
 
@@ -23,8 +18,4 @@ case class RushHourMove(val carSign: Char, val step: Step) {
         case Right => ">"
       }
     }
-}
-
-case class Path(moves: List[RushHourMove]) {
-  override def toString: String = "Path: " + moves.reverse.mkString(", ")
 }

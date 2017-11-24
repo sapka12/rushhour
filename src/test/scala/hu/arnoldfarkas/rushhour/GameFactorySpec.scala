@@ -1,6 +1,6 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game._
+import hu.arnoldfarkas.rushhour.rushhour._
 import org.scalatest.FlatSpec
 
 class GameFactorySpec extends FlatSpec {

@@ -1,8 +1,7 @@
 package hu.arnoldfarkas.rushhour
 
 import org.scalatest.FlatSpec
-import hu.arnoldfarkas.rushhour.game._
-import Field._
+import hu.arnoldfarkas.rushhour.rushhour._
 
 class RushHourStateSpec extends FlatSpec {
 

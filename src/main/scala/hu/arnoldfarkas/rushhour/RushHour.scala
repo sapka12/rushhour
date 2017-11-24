@@ -1,7 +1,6 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game.Car
-import hu.arnoldfarkas.rushhour.rushhour.RushHourGameSolver
+import hu.arnoldfarkas.rushhour.rushhour.{Car, RushHourGameSolver}
 
 import scala.io.Source
 

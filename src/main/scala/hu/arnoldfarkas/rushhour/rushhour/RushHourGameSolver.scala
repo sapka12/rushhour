@@ -1,8 +1,6 @@
 package hu.arnoldfarkas.rushhour.rushhour
 
-import hu.arnoldfarkas.rushhour.game._
-import hu.arnoldfarkas.rushhour.common.GameSolver
-import hu.arnoldfarkas.rushhour.game.{Car, RushHourMove, RushHourState}
+import hu.arnoldfarkas.rushhour.game.GameSolver
 
 class RushHourGameSolver(cars: Set[Car], finalCarPos: Car) extends GameSolver[RushHourState, RushHourMove] {
 

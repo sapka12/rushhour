@@ -1,6 +1,6 @@
 package hu.arnoldfarkas.rushhour
 
-import hu.arnoldfarkas.rushhour.game._
+import hu.arnoldfarkas.rushhour.rushhour._
 
 object GameFactory {
 
@@ -37,7 +37,7 @@ object GameFactory {
       }
     }
 
-    Car(findCharInArr(c, toMatrix(input), 0, Set()), c)
+    rushhour.Car(findCharInArr(c, toMatrix(input), 0, Set()), c)
   }
 
   def cars(input: String, carIds: Set[Char]): Set[Car] =
