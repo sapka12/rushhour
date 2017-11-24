@@ -31,15 +31,13 @@ trait GameSolver[S, M] {
       case (nextState, _) => nextState
     }
 
-    val groupedLayer = layer.seq.groupBy{
+    val nextLayer: HistoryLayer = layer.seq.groupBy{
       case (s, _) => s
-    }.mapValues(_.map(_._2).foldLeft[List[M]](List()){
+    }.mapValues(_.map(_._2).reduce[Path]{
       case (ms, ms2) => if (ms.size < ms2.size) ms else ms2
-    }).toSet
+    }).toSet.seq
 
-    groupedLayer
-
-    (groupedLayer.seq, allVisited)
+    (nextLayer, allVisited)
   }
 
   private def tree[A](historyLayer: HistoryLayer, visited: Set[S], count: Int = 0): Stream[HistoryLayer] =

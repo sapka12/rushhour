@@ -55,6 +55,8 @@ class RushHourGameSolverSpec extends FlatSpec with Matchers {
     val solution = solver.solve(startState)
     val moves: List[RushHourMove] = solution.get
 
+    println(solution)
+
     moves.size should be <= maxNumOfStepsInSolution
   }
 
@@ -84,7 +86,7 @@ class RushHourGameSolverSpec extends FlatSpec with Matchers {
 
   it should "solve level6 from TrafficHour" in {
 
-    val maxNumOfStepsInSolution = 10
+    val maxNumOfStepsInSolution = 14
 
     val finalCarPosition: Car = Car(Set(Pos(4, 2), Pos(5, 2)), 'X')
     val startState: RushHourState = GameFactory.state(
