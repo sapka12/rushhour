@@ -1,7 +1,7 @@
-package hu.arnoldfarkas.rushhour.rubik3
+package hu.arnoldfarkas.rushhour.rubik
 
 import hu.arnoldfarkas.rushhour.game.GameSolver
-import hu.arnoldfarkas.rushhour.rubik3.Rubik3Solver._
+import hu.arnoldfarkas.rushhour.rubik.Rubik3Solver._
 
 object Rubik3Solver {
   case class RubikMove(dimension: Dimension, rotation: Rotation, layer: Int)
