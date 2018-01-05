@@ -18,8 +18,8 @@ trait GameSolver[S, M] {
       for {
         (state, path) <- historyLayer.par
         (nextState, move) <- actions.map(m => (step(state, m), m))
-        if nextState.isDefined
-        if !visited.contains(nextState.get)
+        st <- nextState.toList
+        if !visited.contains(st)
       } yield (nextState.get, move :: path)
 
     val allVisited = visited ++ layer.map{
@@ -35,11 +35,12 @@ trait GameSolver[S, M] {
     (nextLayer, allVisited)
   }
 
-  private def tree[A](historyLayer: HistoryLayer, visited: Set[S]): Stream[HistoryLayer] =
+  private def tree[A](historyLayer: HistoryLayer, visited: Set[S], layerCount: Int = 0): Stream[HistoryLayer] =
     if (historyLayer isEmpty) Stream.empty[HistoryLayer]
     else {
       val (nextHistoryLayer, nextStates) = nextLayer(historyLayer, visited)
-      historyLayer #:: tree(nextHistoryLayer, visited ++ nextStates)
+      println(s"$layerCount :: ${nextStates.size} :: ${visited.size}")
+      historyLayer #:: tree(nextHistoryLayer, visited ++ nextStates, layerCount + 1)
     }
 
   private def build(startState: S): Stream[History] =

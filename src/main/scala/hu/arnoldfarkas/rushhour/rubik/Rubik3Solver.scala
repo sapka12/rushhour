@@ -27,7 +27,7 @@ class Rubik3Solver extends GameSolver[Rubik3State, RubikMove]{
   override val actions = for {
     dim <- Dimensions
     rot <- Rotations
-    layer <- (1 to 3).toSet
+    layer <- (1 to 3).toSet[Int]
   } yield RubikMove(dim, rot, layer)
 
   override def step(gameState: Rubik3State, move: RubikMove) = Some{
